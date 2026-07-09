@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Joyeux anniversaire, Kerstine</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,500&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+<style>
+  :root{
+    --navy: #0b0e23;
+    --violet: #2c1b4d;
+    --gold: #e8c468;
+    --rose: #f0a6b8;
+    --cream: #f6f1e7;
+  }
+  *{ box-sizing: border-box; margin:0; padding:0; }
+  html,body{ height:100%; }
+  body{
+    background: radial-gradient(ellipse at 50% -10%, var(--violet) 0%, var(--navy) 55%, #060714 100%);
+    color: var(--cream);
+    font-family: 'Space Grotesk', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding: 6vh 5vw 8vh;
+  }
+
+  /* Starry sky */
+  #stars{
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+  }
+  .star{
+    position:absolute; background: var(--cream); border-radius:50%;
+    opacity:0.6; animation: twinkle 3.5s ease-in-out infinite;
+  }
+  @keyframes twinkle{
+    0%,100%{ opacity:0.15; }
+    50%{ opacity:0.9; }
+  }
+
+  .content{ position:relative; z-index:1; width:100%; max-width: 640px; display:flex; flex-direction:column; align-items:center; text-align:center; }
+
+  /* Gate screen */
+  .gate{
+    position:fixed; inset:0; z-index:10;
+    background: radial-gradient(ellipse at 50% -10%, var(--violet) 0%, var(--navy) 55%, #060714 100%);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap: 1.6rem;
+    transition: opacity .7s ease;
+  }
+  .gate.hidden{ opacity:0; pointer-events:none; }
+  .gate-label{
+    font-family:'Fraunces', serif; font-style:italic; font-weight:500;
+    font-size: clamp(1.6rem, 6vw, 2.4rem); color: var(--gold);
+    text-align:center; padding: 0 8vw;
+  }
+  .gate-btn{
+    background: var(--gold); color: var(--navy); border:none;
+    font-family:'Space Grotesk', sans-serif; font-weight:600; font-size:1rem; letter-spacing:0.03em;
+    padding: 1rem 2.4rem; border-radius: 999px; cursor:pointer;
+    box-shadow: 0 0 40px rgba(232,196,104,0.35);
+    transition: transform .2s ease, box-shadow .2s ease;
+  }
+  .gate-btn:hover{ transform: scale(1.04); box-shadow: 0 0 55px rgba(232,196,104,0.5); }
+  .gate-btn:focus-visible{ outline: 2px solid var(--rose); outline-offset:3px; }
+  .gate-hint{ font-size:0.75rem; letter-spacing:0.08em; color: var(--rose); opacity:0.85; }
+
+  .eyebrow{
+    letter-spacing: 0.35em; text-transform: uppercase; font-size: 0.7rem;
+    color: var(--rose); margin-bottom: 1.2rem; font-weight:500;
+  }
+
+  h1{
+    font-family:'Fraunces', serif; font-weight:500; font-style:italic;
+    font-size: clamp(2.6rem, 9vw, 4.6rem);
+    line-height: 1.05;
+    color: var(--gold);
+    text-shadow: 0 0 30px rgba(232,196,104,0.35);
+  }
+
+  .subtitle{
+    margin-top: 1.1rem; font-size: 1.05rem; color: var(--cream); opacity:0.85;
+    max-width: 30em; line-height:1.6;
+  }
+
+  /* Message reveal */
+  .message{
+    margin-top: 3rem; opacity:0; transform: translateY(14px);
+    transition: opacity .8s ease, transform .8s ease;
+    max-width: 34em;
+  }
+  .message.show{ opacity:1; transform:none; }
+  .message p{ font-size: 1.05rem; line-height:1.75; color: var(--cream); }
+  .message p + p{ margin-top: 1rem; }
+  .signoff{ margin-top:1.4rem; font-family:'Fraunces', serif; font-style:italic; color: var(--gold); font-size:1.2rem; }
+
+  /* Music control */
+  .music-btn{
+    margin-top: 2.2rem;
+    display:inline-flex; align-items:center; gap:0.6rem;
+    background: transparent;
+    border: 1px solid rgba(232,196,104,0.5);
+    color: var(--gold);
+    padding: 0.7rem 1.4rem;
+    border-radius: 999px;
+    font-family:'Space Grotesk', sans-serif;
+    font-size:0.85rem; letter-spacing:0.03em;
+    cursor:pointer;
+    transition: background .25s ease, color .25s ease, border-color .25s ease;
+  }
+  .music-btn:hover{ background: var(--gold); color: var(--navy); border-color: var(--gold); }
+  .music-btn:focus-visible{ outline: 2px solid var(--rose); outline-offset:3px; }
+  .note-icon{ width:16px; height:16px; fill: currentColor; }
+
+  /* Confetti */
+  .confetti{
+    position:fixed; top:-10px; width:8px; height:14px; z-index:2; pointer-events:none;
+    animation: fall linear forwards;
+  }
+  @keyframes fall{
+    to{ transform: translateY(110vh) rotate(540deg); opacity:0.9; }
+  }
+
+  footer{ position:relative; z-index:1; margin-top:3rem; font-size:0.7rem; color: rgba(246,241,231,0.4); letter-spacing:0.05em; }
+
+  @media (prefers-reduced-motion: reduce){
+    .star{ animation:none; }
+    .confetti{ animation:none; display:none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="stars"></div>
+
+<div class="gate" id="gate">
+  <div class="gate-label">Un message t'attend, Kerstine</div>
+  <button class="gate-btn" id="gateBtn">Appuie ici</button>
+  <div class="gate-hint">Monte ton volume d'abord</div>
+</div>
+
+<div class="content">
+  <div class="eyebrow">en ton honneur</div>
+  <h1>Happy birthday<br>Kerstine</h1>
+  <p class="subtitle">Un petit mot, et une petite chanson, rien que pour toi.</p>
+
+  <div class="message" id="message">
+    <p>Kerstine, aujourd'hui c'est ton jour et je voulais qu'il commence par un sourire avant même que la journée ne se lève.</p>
+    <p>Depuis qu'on a travaillé ensemble sur nos projets à Youth Technology House, j'ai appris à voir en toi une personne sur qui on peut vraiment compter : travailleuse, généreuse, et toujours prête à donner le meilleur d'elle-même.</p>
+    <p>Merci d'être cette amie précieuse qui apporte de la lumière juste en étant là. Que cette nouvelle année t'apporte tout ce que tu mérites : de la joie, de belles réussites, et encore plus de raisons de sourire.</p>
+    <p class="signoff">Joyeux anniversaire ✨</p>
+  </div>
+
+  <button class="music-btn" id="musicBtn" aria-label="Écouter la chanson d'anniversaire">
+    <svg class="note-icon" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13M9 18a3 3 0 1 1-6 0 3 3 0 0 1 6 0zm12-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/></svg>
+    <span id="musicLabel">Réécouter la chanson</span>
+  </button>
+</div>
+
+<footer>fait avec soin, pour toi</footer>
+
+<script>
+  // Starry sky
+  const starsContainer = document.getElementById('stars');
+  const starCount = 90;
+  for(let i=0;i<starCount;i++){
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = Math.random()*2 + 1;
+    s.style.width = size+'px';
+    s.style.height = size+'px';
+    s.style.top = Math.random()*100+'%';
+    s.style.left = Math.random()*100+'%';
+    s.style.animationDelay = (Math.random()*3.5)+'s';
+    starsContainer.appendChild(s);
+  }
+
+  const musicBtn = document.getElementById('musicBtn');
+
+  // Confetti
+  function launchConfetti(){
+    const colors = ['#e8c468','#f0a6b8','#f6f1e7','#a684c9'];
+    for(let i=0;i<60;i++){
+      const c = document.createElement('div');
+      c.className = 'confetti';
+      c.style.left = Math.random()*100+'vw';
+      c.style.background = colors[Math.floor(Math.random()*colors.length)];
+      c.style.animationDuration = (2.5 + Math.random()*2)+'s';
+      c.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+      document.body.appendChild(c);
+      setTimeout(() => c.remove(), 5000);
+    }
+  }
+
+  // Happy Birthday melody via Tone.js (jouée deux fois, tempo un peu plus lent = version plus longue)
+  const phrase = [
+    ["C4","8n"],["C4","8n"],["D4","4n"],["C4","4n"],["F4","4n"],["E4","2n"],
+    ["C4","8n"],["C4","8n"],["D4","4n"],["C4","4n"],["G4","4n"],["F4","2n"],
+    ["C4","8n"],["C4","8n"],["C5","4n"],["A4","4n"],["F4","4n"],["E4","4n"],["D4","2n"],
+    ["Bb4","8n"],["Bb4","8n"],["A4","4n"],["F4","4n"],["G4","4n"],["F4","2n"]
+  ];
+  const melody = [...phrase, ["rest","4n"], ...phrase];
+  const durMap = { "8n": 0.26, "4n": 0.5, "2n": 0.98 };
+  let synth = null;
+  let bass = null;
+  let isPlaying = false;
+  const musicLabel = document.getElementById('musicLabel');
+
+  async function playMelody(){
+    if(isPlaying) return;
+    isPlaying = true;
+    musicLabel.textContent = 'Ça joue...';
+    await Tone.start();
+    if(!synth){
+      synth = new Tone.Synth({
+        oscillator: { type: 'triangle' },
+        envelope: { attack: 0.01, decay: 0.15, sustain: 0.3, release: 0.3 }
+      }).toDestination();
+      bass = new Tone.Synth({
+        oscillator: { type: 'sine' },
+        envelope: { attack: 0.02, decay: 0.2, sustain: 0.4, release: 0.5 },
+        volume: -10
+      }).toDestination();
+    }
+    let t = Tone.now() + 0.05;
+    let beatCount = 0;
+    melody.forEach(([note, dur]) => {
+      const length = durMap[dur];
+      if(note !== "rest"){
+        synth.triggerAttackRelease(note, length * 0.9, t);
+        if(beatCount % 6 === 0){
+          bass.triggerAttackRelease("C3", length * 2, t);
+        }
+      }
+      t += length;
+      beatCount++;
+    });
+    setTimeout(() => {
+      isPlaying = false;
+      musicLabel.textContent = 'Réécouter la chanson';
+    }, (t - Tone.now() + 0.2) * 1000);
+  }
+
+  musicBtn.addEventListener('click', playMelody);
+
+  // Écran d'accueil : un seul bouton "Appuie ici"
+  const gate = document.getElementById('gate');
+  const gateBtn = document.getElementById('gateBtn');
+  const messageEl = document.getElementById('message');
+
+  gateBtn.addEventListener('click', () => {
+    gate.classList.add('hidden');
+    messageEl.classList.add('show');
+    launchConfetti();
+    playMelody();
+    setTimeout(() => gate.remove(), 800);
+  });
+</script>
+
+</body>
+</html>
